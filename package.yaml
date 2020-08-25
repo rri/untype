@@ -1,0 +1,57 @@
+name: untype
+version: 0.1.0.0
+github: "rri/untype"
+license: MIT
+author: "Ramnath R Iyer"
+maintainer: "rri@silentyak.com"
+copyright: "Copyright (c) 2020 Ramnath R Iyer"
+
+extra-source-files:
+- LICENSE
+- README.md
+
+# Metadata used when publishing your package
+synopsis: Untyped λ-Calculus Evaluator
+category: Software
+description: Refer to README.md on GitHub at <https://github.com/rri/untype#readme>
+
+# Options supplied to language extensions enabled for the Glasgow Haskell Compiler (GHC)
+
+<<: !include "cfg/default-extensions.yaml"
+
+# Options supplied to the GHC compiler for all sections (library, executables, tests)
+
+<<: !include "cfg/ghc-options.yaml"
+
+dependencies:
+- base
+- text
+- attoparsec
+- either
+- text-show
+
+library:
+  source-dirs: lib
+
+executables:
+  untype:
+    main: Main.hs
+    source-dirs: exe
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - untype
+
+tests:
+  spec:
+    main: Main.hs
+    source-dirs: tst
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - untype
+    - HUnit

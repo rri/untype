@@ -1,0 +1,11 @@
+ghc-options:
+- -Wall
+- -Werror
+- -Wincomplete-uni-patterns
+- -Wincomplete-record-updates
+- -Wpartial-fields
+- -Wno-missing-home-modules
+- -Widentities
+- -Wredundant-constraints
+- -Wcpp-undef
+- -optP-Wno-nonportable-include-path
