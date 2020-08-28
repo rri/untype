@@ -5,6 +5,7 @@ import Control.Applicative ((<|>), pure)
 import Core (Sym (Sym), Term (Var, Abs, App))
 import Data.Attoparsec.Text
     ( Parser
+    , choice
     , many1
     , skip
     , skipMany
@@ -24,19 +25,11 @@ import Data.Function (($))
 --   the order of the parsers is significant. If the first one
 --   succeeds, it will be used, even if there is trailing text.
 termParser :: Parser Term
-termParser = appParser' <|> absParser' <|> varParser'
-
--- | Variable parser that also checks for parenthesis.
-varParser' :: Parser Term
-varParser' = varParser <|> parens varParser
-
--- | Application parser that also checks for parenthesis.
-appParser' :: Parser Term
-appParser' = appParser <|> parens appParser
-
--- | Abstraction parser that also checks for parenthesis.
-absParser' :: Parser Term
-absParser' = absParser <|> parens absParser
+termParser = choice
+    [ appParser <|> parens appParser
+    , absParser <|> parens absParser
+    , varParser <|> parens varParser
+    ]
 
 -- | Application parser.
 --
@@ -51,7 +44,11 @@ absParser' = absParser <|> parens absParser
 --   works because application is left-associative.
 appParser :: Parser Term
 appParser = do
-    l <- many1 (parens appParser <|> absParser' <|> varParser')
+    l <- many1 $ choice
+        [ parens appParser
+        , absParser <|> parens absParser
+        , varParser <|> parens varParser
+        ]
     pure $ foldl1 (\p q -> App p q) l
 
 -- | Abstraction parser.
